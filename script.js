@@ -17,15 +17,28 @@ function onIntersectionClick(e) {
     .openOn(map);
 }
 
+
+// Function to create a custom icon
+function createCustomIcon(iconUrl) {
+    return L.icon({
+        iconUrl: iconUrl,
+        iconSize: [32, 32], // size of the icon
+        iconAnchor: [16, 32], // point of the icon which will correspond to marker's location
+        popupAnchor: [0, -32] // point from which the popup should open relative to the iconAnchor
+    });
+}
+
+
+
 // Function to add markers from parsed JSON data
 function addMarkersFromJSON(data) {
   data.forEach(function(row) {
     var lat = parseFloat(row[" Latitude "]);
     var lng = parseFloat(row[" Longitude "]);
     var pic = row.picture;
-    console.log(pic);
+    var customIcon = createCustomIcon(row.icon);
     if (!isNaN(lat) && !isNaN(lng) && pic) {
-      L.marker([lat, lng], {pic: pic}).addTo(map).on('click', onIntersectionClick);
+      L.marker([lat, lng], {icon: customIcon, pic: pic}).addTo(map).on('click', onIntersectionClick);
     }
   });
 }
@@ -34,14 +47,67 @@ var data = [
     {
       " Latitude ": "43.66578234239536",
       " Longitude ": "-79.45008923158008",
-      "picture": '<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Introducing: New Office Hours 6<br><br>Wed May 15, opens 9am until 5pm, in Toronto.<br><br>Right in the middle of Toronto Tech Week (<a href="https://twitter.com/TorontoTechWk24?ref_src=twsrc%5Etfw">@TorontoTechWk24</a>).<br><br>Will be focused on deep work, casual discussions and sharing, then people will hit other events going on in the city together.<br><br>Link below <a href="https://t.co/S4wi3X8tAD">pic.twitter.com/S4wi3X8tAD</a></p>&mdash; internetVin (@internetvin) <a href="https://twitter.com/internetvin/status/1790016378327466418?ref_src=twsrc%5Etfw">May 13, 2024</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>'
+      "picture": '<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Introducing: New Office Hours 6<br><br>Wed May 15, opens 9am until 5pm, in Toronto.<br><br>Right in the middle of Toronto Tech Week (<a href="https://twitter.com/TorontoTechWk24?ref_src=twsrc%5Etfw">@TorontoTechWk24</a>).<br><br>Will be focused on deep work, casual discussions and sharing, then people will hit other events going on in the city together.<br><br>Link below <a href="https://t.co/S4wi3X8tAD">pic.twitter.com/S4wi3X8tAD</a></p>&mdash; internetVin (@internetvin) <a href="https://twitter.com/internetvin/status/1790016378327466418?ref_src=twsrc%5Etfw">May 13, 2024</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>',
+      "user": "@internetvin",
+      "icon": 'https://pbs.twimg.com/profile_images/1735384404074082304/ctxbZCwW_400x400.jpg'
     },
 
     {
       " Latitude ": "43.65094258233963",
       " Longitude ":  "-79.41281423358113",
-      "picture": '<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Started taking a lot of street photos. I’m studying the city and learning more about photography. <a href="https://t.co/Wrl1zuW7Gd">pic.twitter.com/Wrl1zuW7Gd</a></p>&mdash; Case is in Toronto! (@caseploeg) <a href="https://twitter.com/caseploeg/status/1790234234264645937?ref_src=twsrc%5Etfw">May 14, 2024</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>'
+      "picture": '<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Started taking a lot of street photos. I’m studying the city and learning more about photography. <a href="https://t.co/Wrl1zuW7Gd">pic.twitter.com/Wrl1zuW7Gd</a></p>&mdash; Case is in Toronto! (@caseploeg) <a href="https://twitter.com/caseploeg/status/1790234234264645937?ref_src=twsrc%5Etfw">May 14, 2024</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>',
+      "user": "@caseploeg",
+      "icon": 'https://pbs.twimg.com/profile_images/1747057932100128768/lYf6jSqK_400x400.jpg'
     },
+
+    {
+      " Latitude ": "43.62991752525503", 
+      " Longitude ":  "-79.40093077690383",
+      "picture": '<blockquote class="twitter-tweet"><p lang="en" dir="ltr">NeoToronto Summer is gonna be a blast<a href="https://twitter.com/caseploeg?ref_src=twsrc%5Etfw">@caseploeg</a> <a href="https://t.co/eIbRuj3BQL">pic.twitter.com/eIbRuj3BQL</a></p>&mdash; White Pill (@Wh1tePill) <a href="https://twitter.com/Wh1tePill/status/1790415335897677941?ref_src=twsrc%5Etfw">May 14, 2024</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>',
+      "user": "@Wh1tePill",
+      "icon": 'https://pbs.twimg.com/profile_images/1763348856870182912/qd6vC3Iw_400x400.png'
+    },
+
+    {
+      " Latitude ": "43.652334584912836", 
+      " Longitude ": "-79.40606624692624",
+      "picture": '<blockquote class="twitter-tweet"><p lang="qme" dir="ltr"> <a href="https://t.co/UQitbCaPKQ">pic.twitter.com/UQitbCaPKQ</a></p>&mdash; 𓏴𓀿𓁼𓀐𓏴 (@simulacronist) <a href="https://twitter.com/simulacronist/status/1790415704069464347?ref_src=twsrc%5Etfw">May 14, 2024</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>',
+      "user": "@simulacronist",
+      "icon": 'https://pbs.twimg.com/profile_images/1763636033156161536/p3ZwoMZ__400x400.jpg'
+    },
+
+    {
+    " Latitude ": 43.76671024669246,
+    " Longitude ": -79.41227681993907,
+    "picture": '<blockquote class="twitter-tweet"><p lang="qme" dir="ltr"><a href="https://twitter.com/caseploeg?ref_src=twsrc%5Etfw">@caseploeg</a> <a href="https://t.co/hzNYvJrm7E">https://t.co/hzNYvJrm7E</a> <a href="https://t.co/TOuAfnYHnH">pic.twitter.com/TOuAfnYHnH</a></p>&mdash; cindy (@ascii_g1rl) <a href="https://twitter.com/ascii_g1rl/status/1790254046458110258?ref_src=twsrc%5Etfw">May 14, 2024</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>',
+    "user": "@ascii_g1rl",
+    "icon": 'https://pbs.twimg.com/profile_images/1771011311716995072/j3spUQio_400x400.jpg'
+    },
+
+    {
+    " Latitude ": 43.645337161877755, 
+    " Longitude ": -79.41318170820284,
+    "picture": '<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Day // Night cycle <a href="https://t.co/ULqQZZhk1T">pic.twitter.com/ULqQZZhk1T</a></p>&mdash; Case is in Toronto! (@caseploeg) <a href="https://twitter.com/caseploeg/status/1790412027745190178?ref_src=twsrc%5Etfw">May 14, 2024</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>',
+    "user": "@caseploeg",
+    "icon": 'https://pbs.twimg.com/profile_images/1747057932100128768/lYf6jSqK_400x400.jpg'
+    },
+    
+    {
+      " Latitude ": "43.648395744566756", 
+      " Longitude ": "-79.3932067008899",
+      "picture": '<blockquote class="twitter-tweet"><p lang="en" dir="ltr">richmond and peter <a href="https://t.co/BNqhjbgypW">https://t.co/BNqhjbgypW</a> <a href="https://t.co/zNcE08ymV7">pic.twitter.com/zNcE08ymV7</a></p>&mdash; tommy (@tommytrxnh) <a href="https://twitter.com/tommytrxnh/status/1790438898440560884?ref_src=twsrc%5Etfw">May 14, 2024</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>',
+      "user": "@tommytrxnh",
+      "icon": "https://pbs.twimg.com/profile_images/1778495318159446016/Y-IVvbIo_400x400.jpg"
+    },
+    
+    {
+      " Latitude ": "43.693452688983406",
+      " Longitude ": "-79.40277530843203",
+      "picture": '<blockquote class="twitter-tweet"><p lang="en" dir="ltr">midtown <a href="https://t.co/OEPUTaraKW">https://t.co/OEPUTaraKW</a> <a href="https://t.co/W7WacspSxc">pic.twitter.com/W7WacspSxc</a></p>&mdash; White Pill (@Wh1tePill) <a href="https://twitter.com/Wh1tePill/status/1790442616204435463?ref_src=twsrc%5Etfw">May 14, 2024</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>',
+      "user": "@Wh1tePill",
+      "icon": 'https://pbs.twimg.com/profile_images/1763348856870182912/qd6vC3Iw_400x400.png'
+    },
+
 
     {
         "ID": "2",
@@ -51,8 +117,6 @@ var data = [
         " r3 ": "",
         " built_date ": " 11/15/1948 ",
         "built_year": "1948 ",
-        " Latitude ": "43.649418",
-        " Longitude ": "-79.371446",
         "count_date": "9-8-2011",
         "veh_vol": "19335",
         "ped_vol": "17008"
@@ -31812,4 +31876,57 @@ var data = [
     }
 ];
 addMarkersFromJSON(data);
+
+
+
+// Function to count photos by each user
+function countPhotosByUser(data) {
+    var userPhotoCount = {};
+
+    data.forEach(function(row) {
+        if (row.picture) {
+          if (row.user) {
+              if (!userPhotoCount[row.user]) {
+                  userPhotoCount[row.user] = 0;
+              }
+              userPhotoCount[row.user]++;
+          }
+
+        }
+    });
+
+
+     // Convert the object to an array of [user, count] pairs, sort it, and convert back to an object
+    var sortedUserPhotoCount = Object.entries(userPhotoCount).sort((a, b) => b[1] - a[1]);
+
+
+    return sortedUserPhotoCount;
+}
+
+// Populate leaderboard table
+function populateLeaderboardTable(photoCountByUser) {
+    var tbody = document.querySelector("#leaderboard tbody");
+    tbody.innerHTML = ''; // Clear existing rows
+
+    for (var user in photoCountByUser) {
+        var tr = document.createElement('tr');
+        console.log(user, photoCountByUser[user]);
+
+        var tdUser = document.createElement('td');
+        tdUser.textContent = photoCountByUser[user][0];
+        tr.appendChild(tdUser);
+
+        var tdCount = document.createElement('td');
+        tdCount.textContent = photoCountByUser[user][1];
+        tr.appendChild(tdCount);
+
+        tbody.appendChild(tr);
+    }
+}
+
+// Get the photo count by user
+var photoCountByUser = countPhotosByUser(data);
+
+// Populate the leaderboard table
+populateLeaderboardTable(photoCountByUser);
 
