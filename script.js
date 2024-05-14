@@ -17,26 +17,31 @@ function onIntersectionClick(e) {
     .openOn(map);
 }
 
-
-// Function to create a custom icon
-function createCustomIcon(iconUrl) {
+// Function to create a custom icon with variable size based on rank
+function createCustomIcon(iconUrl, size) {
     return L.icon({
         iconUrl: iconUrl,
-        iconSize: [32, 32], // size of the icon
-        iconAnchor: [16, 32], // point of the icon which will correspond to marker's location
-        popupAnchor: [0, -32] // point from which the popup should open relative to the iconAnchor
+        iconSize: [size, size], // size of the icon
+        iconAnchor: [size / 2, size], // point of the icon which will correspond to marker's location
+        popupAnchor: [0, -size] // point from which the popup should open relative to the iconAnchor
     });
 }
 
 
 
 // Function to add markers from parsed JSON data
-function addMarkersFromJSON(data) {
+function addMarkersFromJSON(data, sortedUserPhotoCount) {
   data.forEach(function(row) {
     var lat = parseFloat(row[" Latitude "]);
     var lng = parseFloat(row[" Longitude "]);
     var pic = row.picture;
-    var customIcon = createCustomIcon(row.icon);
+    var sizeMap = {};
+  sortedUserPhotoCount.forEach((entry, index) => {
+        // Larger size for higher ranks
+        sizeMap[entry[0]] = 16 + (sortedUserPhotoCount.length - index) * 8; // Base size 16, increasing by 4 for each rank
+    });
+    var customIcon = createCustomIcon(row.icon, sizeMap[row.user]);
+
     if (!isNaN(lat) && !isNaN(lng) && pic) {
       L.marker([lat, lng], {icon: customIcon, pic: pic}).addTo(map).on('click', onIntersectionClick);
     }
@@ -108,6 +113,13 @@ var data = [
       "icon": 'https://pbs.twimg.com/profile_images/1763348856870182912/qd6vC3Iw_400x400.png'
     },
 
+    {
+      " Latitude ": "43.65794019517395",
+      " Longitude ": "-79.40006887761695",
+      "picture": '<blockquote class="twitter-tweet"><p lang="qme" dir="ltr"> <a href="https://t.co/qvY4SPKOP7">pic.twitter.com/qvY4SPKOP7</a></p>&mdash; Suraj Parmar (@parmarsuraj99) <a href="https://twitter.com/parmarsuraj99/status/1790443919492206653?ref_src=twsrc%5Etfw">May 14, 2024</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>',
+      "user": "@parmarsuraj99",
+      "icon": "https://pbs.twimg.com/profile_images/1788172369653100544/XMasoQtX_400x400.jpg"
+    },
 
     {
         "ID": "2",
@@ -31875,7 +31887,6 @@ var data = [
         "ped_vol": "16"
     }
 ];
-addMarkersFromJSON(data);
 
 
 
@@ -31930,3 +31941,4 @@ var photoCountByUser = countPhotosByUser(data);
 // Populate the leaderboard table
 populateLeaderboardTable(photoCountByUser);
 
+addMarkersFromJSON(data, photoCountByUser);
