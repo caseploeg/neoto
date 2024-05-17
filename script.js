@@ -443,10 +443,9 @@ function onEachFeature(feature, layer) {
         }
     });
 }
-
 L.geoJson(neighbourhoods, {style: style, onEachFeature: onEachFeature}).addTo(map);
 
-var svgDefs = '<svg><defs>';
+var svgDefs = '<svg  style="position: absolute; left: -9999px; top: -9999px;"><defs>';
 
 var imageURLs = {};
 
