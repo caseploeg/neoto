@@ -1,4 +1,5 @@
 // Function to start the countdown timer
+// yo wahts up 
 function startCountdown() {
     const targetDate = new Date('May 31, 2024 00:00:00').getTime();
 
