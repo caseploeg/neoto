@@ -1,26 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Interactive Map of Toronto</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-  <style>
-        html, body {
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centered Image</title>
+    <style>
+        body, html {
             height: 100%;
             margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
         }
-        #map {
-            height: 100%;
-            width: 100%;
+        img {
+            max-width: 100%;
+            height: auto;
         }
-  </style>
+    </style>
 </head>
 <body>
-  <h1>NeoTO</h1>
-  <p>Most recent tweets claim a spot on the map. Map reset when all spots are claimed. Updates daily.</p>
-  <div id="map"></div>
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-  <!--<script src="https://unpkg.com/@turf/turf/turf.min.js"></script>-->
-  <script src="script.js"></script>
+    <img src="https://pbs.twimg.com/media/GU-5iwDXIAAmyn4?format=jpg&name=medium" alt="Centered Image">
 </body>
 </html>
-
