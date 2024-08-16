@@ -3,23 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Centered Image</title>
+    <title>Interactive Toronto Map</title>
     <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #000;
-        }
-        img {
-            max-width: 100%;
-            height: auto;
-        }
+       body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Prevent scrolling */
+    font-family: Arial, sans-serif;
+}
+
+#map-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+#toronto-map {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the map covers the entire screen */
+    object-position: center;
+}
+
+#location-pin {
+    position: absolute;
+    left: 25%;
+    top: 60%;
+    width: 24px;
+    height: 36px;
+    background-color: #4285F4;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    cursor: pointer;
+    animation: bounce 0.6s infinite alternate;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+#location-pin::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 24px;
+    height: 24px;
+    background-color: #4285F4;
+    border-radius: 50% 50% 50% 0;
+}
+
+#location-pin::after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background-color: white;
+    position: absolute;
+    border-radius: 50%;
+    top: 6px;
+    left: 6px;
+}
+
+@keyframes bounce {
+    from {
+        transform: rotate(-45deg) translate(0, 0);
+    }
+    to {
+        transform: rotate(-45deg) translate(0, -10px);
+    }
+}
+
+#zoomed-image {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 90%;
+    max-height: 90%;
+    z-index: 1000;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+#close-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+    z-index: 1001;
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    border-radius: 50%;
+}
+
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
     </style>
 </head>
 <body>
-    <img src="https://pbs.twimg.com/media/GU-5iwDXIAAmyn4?format=jpg&name=medium" alt="Centered Image">
+    <div id="map-container">
+        <img id="toronto-map" src="https://pbs.twimg.com/media/GU-5iwDXIAAmyn4?format=jpg&name=medium" alt="Pixel art map of Toronto">
+        <div id="location-pin"></div>
+    </div>
+    <div id="overlay"></div>
+    <div id="upload-section" style="position: absolute; bottom: 20px; right: 20px; text-align: center; display: none; z-index: 1002;">
+        <button id="upload-button" style="padding: 10px 20px; background-color: #4285F4; color: white; border: none; cursor: pointer;">
+            Did you eat here? Upload a photo
+        </button>
+        <input type="file" id="upload-input" accept="image/*" style="display: none;">
+    </div>
+    
+    <img id="zoomed-image" src="https://pbs.twimg.com/media/GVFhcqlXYAAnGVo?format=jpg&name=4096x4096" alt="Zoomed view of Trinity Bellwoods">
+    
+    <div id="close-button">×</div>
+    <div id="dark-mode-button" style="position: absolute; top: 60px; right: 20px; font-size: 16px; color: white; cursor: pointer; z-index: 1003; background-color: rgba(0, 0, 0, 0.5); padding: 10px; border-radius: 5px; display: none;">
+        🌙
+    </div>
+
+
+    <script>
+       const locationPin = document.getElementById('location-pin');
+    const zoomedImage = document.getElementById('zoomed-image');
+    const closeButton = document.getElementById('close-button');
+    const overlay = document.getElementById('overlay');
+    const torontoMap = document.getElementById('toronto-map');
+    const uploadSection = document.getElementById('upload-section'); // Add this line
+    const darkModeButton = document.getElementById('dark-mode-button');
+    let isDarkMode = false;
+
+    locationPin.addEventListener('click', () => {
+    zoomedImage.style.display = 'block';
+    closeButton.style.display = 'block';
+    overlay.style.display = 'block';
+    torontoMap.style.filter = 'blur(5px)';
+    uploadSection.style.display = 'block';
+    darkModeButton.style.display = 'block'; // Show the dark mode button
+});
+
+closeButton.addEventListener('click', () => {
+    zoomedImage.style.display = 'none';
+    closeButton.style.display = 'none';
+    overlay.style.display = 'none';
+    torontoMap.style.filter = 'none';
+    uploadSection.style.display = 'none';
+    darkModeButton.style.display = 'none'; // Hide the dark mode button
+    isDarkMode = false; // Reset dark mode
+    zoomedImage.src = './for_honored_bigdoggydog.png'; // Reset to original image
+});
+    darkModeButton.addEventListener('click', () => {
+    isDarkMode = !isDarkMode;
+    if (isDarkMode) {
+        zoomedImage.src = 'https://pbs.twimg.com/media/GVFhcqlWwAAXSCC?format=jpg&name=4096x4096'; // Path to the dark mode version
+    } else {
+        zoomedImage.src = 'https://pbs.twimg.com/media/GVFhcqlXYAAnGVo?format=jpg&name=4096x4096'; // Path to the original version
+    }
+});
+
+    const uploadButton = document.getElementById('upload-button');
+const uploadInput = document.getElementById('upload-input');
+
+uploadButton.addEventListener('click', () => {
+    uploadInput.click();
+});
+
+uploadInput.addEventListener('change', () => {
+    const file = uploadInput.files[0];
+    
+    if (file) {
+        // Simulate the upload process
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setTimeout(() => {
+                // Render the web preview in a popup with the congrats message
+                renderWebPreviewPopup('https://beyblade.to/6ecc86');
+            }, 1000);
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+function renderWebPreviewPopup(url) {
+    // Create the overlay for the popup
+    const overlay = document.createElement('div');
+    overlay.id = 'web-preview-overlay';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    overlay.style.zIndex = '1000';
+    overlay.style.display = 'flex';
+    overlay.style.justifyContent = 'center';
+    overlay.style.alignItems = 'center';
+    overlay.style.zIndex = '2000';
+
+    // Create the popup container
+    const popupContainer = document.createElement('div');
+    popupContainer.style.width = '80%';
+    popupContainer.style.height = '80%';
+    popupContainer.style.backgroundColor = 'white';
+    popupContainer.style.position = 'relative';
+    popupContainer.style.borderRadius = '10px';
+    popupContainer.style.overflow = 'hidden';
+    popupContainer.style.display = 'flex';
+    popupContainer.style.flexDirection = 'column';
+
+    // Create the congratulatory message
+    const congratsMessage = document.createElement('div');
+    congratsMessage.innerHTML = '🎉 Congratulations! You unlocked a <a href="' + url + '" target="_blank">Beyblade</a>';
+    congratsMessage.style.padding = '25px';
+    congratsMessage.style.textAlign = 'center';
+    congratsMessage.style.backgroundColor = '#f0f0f0';
+    congratsMessage.style.fontSize = '18px';
+    congratsMessage.style.color = '#333';
+
+    // Create the iframe for the web preview
+    const previewFrame = document.createElement('iframe');
+    previewFrame.src = url;
+    previewFrame.style.flex = '1';
+    previewFrame.style.width = '100%';
+    previewFrame.style.border = 'none';
+
+    // Create the close button
+    const closeButton = document.createElement('div');
+    closeButton.innerHTML = '&times;';
+    closeButton.style.position = 'absolute';
+    closeButton.style.top = '10px';
+    closeButton.style.right = '20px';
+    closeButton.style.fontSize = '24px';
+    closeButton.style.color = '#333';
+    closeButton.style.cursor = 'pointer';
+    closeButton.style.zIndex = '1001';
+
+    closeButton.addEventListener('click', () => {
+        document.body.removeChild(overlay);
+    });
+
+    // Append elements
+    popupContainer.appendChild(closeButton);
+    popupContainer.appendChild(congratsMessage);
+    popupContainer.appendChild(previewFrame);
+    overlay.appendChild(popupContainer);
+    document.body.appendChild(overlay);
+}
+
+
+    </script>
 </body>
 </html>
